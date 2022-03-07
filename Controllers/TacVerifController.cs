@@ -33,7 +33,7 @@ namespace TeTacApi.Controllers
     private readonly string action2DOC = "/api/document/2D-DOC";
     private readonly string actionDDC = "/api/document/DCC";
 
-    private static HttpClient client;// = new HttpClient();
+    private static HttpClient client;
      
 
 
@@ -45,17 +45,15 @@ namespace TeTacApi.Controllers
       HttpClientHandler clientHandler = new HttpClientHandler();
       clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
 
-      clientHandler.SslProtocols = SslProtocols.Tls12; //SslProtocols.Tls13 | SslProtocols.Tls12 | SslProtocols.Tls11 | 
+      clientHandler.SslProtocols = SslProtocols.Tls12; 
       client = new HttpClient(clientHandler); 
 
     }
     private void Log(string _txt)
     {
             
-            //    _logger.LogInformation("IP : " + HttpContext.Connection.RemoteIpAddress.ToString() + " | " + _txt + " | " + " user : " + User.FindFirst("fullName").Value);            
-                _logger.LogInformation("IP : " + HttpContext.Connection.RemoteIpAddress.ToString() + " | " + _txt);
-
-        }
+                _logger.LogInformation("IP : " + HttpContext.Connection.RemoteIpAddress.ToString() + " | " + _txt + " | " + " user : " + User.FindFirst("fullName").Value);                            
+     }
 
         [HttpPost("TacVerif")]    
     public async Task<ActionResult<string>> TacVerifProd(string qrcodecontent)
@@ -65,31 +63,17 @@ namespace TeTacApi.Controllers
 
     [HttpOptions("TacVerifPreProd")]
     public async Task<ActionResult<string>> optionTacVerifPreProd(string qrcodecontent)
-    {
-      //Response.Headers.Add("Access-Control-Allow-Origin", "*");
-      AllowCrossOrigin();
-      return await TacVerif(qrcodecontent, false);
-      // your code...
+    {      
+      return await TacVerif(qrcodecontent, false);      
     }
 
-    private void AllowCrossOrigin()
-    {
-      Uri origin = null;
-      Uri.TryCreate(Request.Headers["Origin"].FirstOrDefault(), UriKind.Absolute, out origin);
-
-      if(origin != null)
-        Response.Headers.Add("Access-Control-Allow-Origin", $"{origin.Scheme}://{origin.Host}");
-    }
-
+   
 
     [HttpPost("TacVerifPreProd")]
     
     public async Task<ActionResult<string>>  TacVerifPreProd(string qrcodecontent)
     {
-      Response.Headers.Add("Access-Control-Allow-Origin", "*");
       return await TacVerif(qrcodecontent, false);
-
-      //      return await _context.Passages.ToListAsync();
     }
 
     private async Task<ActionResult<string>> TacVerif(string qrcodecontent, Boolean prod=true)
@@ -114,7 +98,6 @@ namespace TeTacApi.Controllers
                 
             }
       Log("Call TacVerif with url : " + url + " - token : " + token);
-
 
 
       var request = new HttpRequestMessage(HttpMethod.Post,
